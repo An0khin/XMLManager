@@ -1,5 +1,7 @@
 package org.com.home;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,31 +19,34 @@ public class XMLManager {
 	DocumentBuilderFactory factory;
 	DocumentBuilder builder;
 	Transformer transformer;
-	File filepath;
+	File filePath;
 	
-	public XMLManager(File filepath) {
-		this.filepath = filepath;
-		factory = DocumentBuilderFactory.newInstance();
-		
-		createXML("DataBase");
-	}
-	
-	private void createXML(String nameRoot) {
+	public XMLManager(File filePath) {
+		this.filePath = filePath;
+		this.factory = DocumentBuilderFactory.newInstance();
 		try {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			transformer = transformerFactory.newTransformer();
-			builder = factory.newDocumentBuilder();
-			
-			Document doc = builder.newDocument();
-						
-			doc.appendChild(doc.createElement(nameRoot));
-			
-			DOMSource source = new DOMSource(doc);
-			
-			StreamResult file = new StreamResult(filepath);
-			
-			transformer.transform(source, file);
-			
+			this.transformer = transformerFactory.newTransformer();
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public void createXML(String nameRoot) {
+		try {			
+			if(!filePath.exists()) {
+				builder = factory.newDocumentBuilder();
+				
+				Document doc = builder.newDocument();
+							
+				doc.appendChild(doc.createElement(nameRoot));
+				
+				DOMSource source = new DOMSource(doc);
+				
+				StreamResult file = new StreamResult(filePath);
+				
+				transformer.transform(source, file);
+			}
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
@@ -50,7 +55,7 @@ public class XMLManager {
 	public void buildElement(String elementName) {
 		try {
 			builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(filepath);
+			Document doc = builder.parse(filePath);
 			doc.getDocumentElement().normalize();
 			
 			Element root = (Element) doc.getFirstChild();
@@ -61,7 +66,7 @@ public class XMLManager {
 			
 			DOMSource source = new DOMSource(doc);
 			
-			StreamResult file = new StreamResult(filepath);
+			StreamResult file = new StreamResult(filePath);
 			
 			transformer.transform(source, file);
 			
@@ -73,7 +78,7 @@ public class XMLManager {
 	public void addElement(String elementName, String parentName) {
 		try {
 			builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(filepath);
+			Document doc = builder.parse(filePath);
 			doc.getDocumentElement().normalize();
 			
 			Element root = (Element) doc.getFirstChild();
@@ -87,7 +92,7 @@ public class XMLManager {
 			
 			DOMSource source = new DOMSource(doc);
 			
-			StreamResult file = new StreamResult(filepath);
+			StreamResult file = new StreamResult(filePath);
 			
 			transformer.transform(source, file);
 			
@@ -99,7 +104,7 @@ public class XMLManager {
 	public void addNode(NodeSync nodeSync, String childName, String parentName) {
 		try {
 			builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(filepath);
+			Document doc = builder.parse(filePath);
 			doc.getDocumentElement().normalize();
 			
 			Element root = (Element) doc.getFirstChild();
@@ -113,7 +118,7 @@ public class XMLManager {
 			
 			DOMSource source = new DOMSource(doc);
 			
-			StreamResult file = new StreamResult(filepath);
+			StreamResult file = new StreamResult(filePath);
 			
 			transformer.transform(source, file);
 			
@@ -125,7 +130,7 @@ public class XMLManager {
 	public void removeNode(NodeSync nodeSync, String nodeName, String parentName) {
 		try {
 			builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(filepath);
+			Document doc = builder.parse(filePath);
 			doc.getDocumentElement().normalize();
 			
 			Element root = (Element) doc.getFirstChild();
@@ -139,7 +144,7 @@ public class XMLManager {
 			
 			DOMSource source = new DOMSource(doc);
 			
-			StreamResult file = new StreamResult(filepath);
+			StreamResult file = new StreamResult(filePath);
 			
 			transformer.transform(source, file);
 			
@@ -151,7 +156,7 @@ public class XMLManager {
 	public void editNode(NodeSync oldNodeSync, NodeSync newNodeSync, String nodeName, String parentName) {
 		try {
 			builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(filepath);
+			Document doc = builder.parse(filePath);
 			doc.getDocumentElement().normalize();
 			
 			Element root = (Element) doc.getFirstChild();
@@ -168,13 +173,49 @@ public class XMLManager {
 			
 			DOMSource source = new DOMSource(doc);
 			
-			StreamResult file = new StreamResult(filepath);
+			StreamResult file = new StreamResult(filePath);
 			
 			transformer.transform(source, file);
 			
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+	
+	public List<String[]> getListOf(String nodeListName, String nodeNames, NodeSync node) {
+		List<String[]> resultList = new ArrayList<String[]>();
+		
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.parse(filePath);
+			doc.getDocumentElement().normalize();
+			
+			Element root = (Element) doc.getFirstChild();
+			
+			Element nodes = (Element) root.getElementsByTagName(nodeListName).item(0);
+			
+			List<String> keys = node.getKeys();
+			
+			NodeList childs = nodes.getChildNodes();
+			
+			for(int i = 0; i < childs.getLength(); i++) {
+				String[] tmpArray = new String[keys.size()];
+				
+				NodeList fields = childs.item(i).getChildNodes();
+				
+				for(int j = 0; j < keys.size(); j++) {
+					tmpArray[j] = fields.item(j).getTextContent();
+				}
+				
+				resultList.add(tmpArray);
+			}
+			
+			
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		return resultList;
 	}
 	
 	private Node findNode(NodeList nodes, NodeSync nodeSync) {
