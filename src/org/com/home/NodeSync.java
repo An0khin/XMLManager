@@ -1,8 +1,8 @@
 package org.com.home;
 import java.util.List;
-import java.util.SortedMap;
+import java.util.HashMap;
 
 public interface NodeSync {
-	SortedMap<String, String> getMapElements();
-	List<String> getIds();
+	HashMap<String, String> getMapElements();
+	List<String> getIds(); //List of {key, value}
 }

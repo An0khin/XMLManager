@@ -133,7 +133,7 @@ public class XMLManager {
 			Element nodes = (Element) root.getElementsByTagName(parentName).item(0);
 						
 			Node removeNode = findNode(nodes.getElementsByTagName(nodeName), nodeSync);
-			
+						
 			if(removeNode != null)
 				((Element) nodes).removeChild(removeNode);
 			
@@ -160,8 +160,11 @@ public class XMLManager {
 						
 			Node oldNode = findNode(nodes.getElementsByTagName(nodeName), oldNodeSync);
 			
-			if(oldNode != null)
-				((Element) nodes).replaceChild(getNode(doc, parentName, newNodeSync), oldNode);
+			if(oldNode != null) {
+				Node newNode = getNode(doc, nodeName, newNodeSync);
+				((Element) nodes).replaceChild(newNode, oldNode);
+			}
+				
 			
 			DOMSource source = new DOMSource(doc);
 			
@@ -179,9 +182,14 @@ public class XMLManager {
 		
 		String idKey = nodeSync.getIds().get(0);
 		String idValue = nodeSync.getIds().get(1);
+		
+//		System.out.println( nodes.getLength());
 				
 		for(int i = 0; i < nodes.getLength(); i++) {
 			Element node = (Element) nodes.item(i);
+			
+//			System.out.println("Date node >> " + node.getElementsByTagName(idKey).item(0).getTextContent());
+//			System.out.println("Id value >> " + idValue);
 			
 			if(node.getElementsByTagName(idKey).item(0).getTextContent().equals(idValue)) {
 				foundNode = node;
