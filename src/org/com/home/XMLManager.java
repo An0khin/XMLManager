@@ -1,5 +1,7 @@
 package org.com.home;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -182,6 +184,49 @@ public class XMLManager {
 		}
 	}
 	
+	public void saveXML(File toPath) {
+		try {
+			Files.copy(filePath.toPath(), toPath.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public void loadXML(File fromPath) {
+		try {
+			builder = factory.newDocumentBuilder();
+			Document docOpen = builder.parse(fromPath);
+			Document doc = builder.parse(filePath);
+			
+			NodeList rootOpenNodes = docOpen.getFirstChild().getChildNodes();
+			NodeList rootNodes = doc.getFirstChild().getChildNodes(); //DataBase
+			
+			for(int i = 0; i < rootNodes.getLength(); i++) {
+				Element catalogueOpen = (Element) rootOpenNodes.item(i);
+				Element catalogue = (Element) rootNodes.item(i); //Records
+					
+				NodeList intoCatalogueOpen = catalogueOpen.getChildNodes();
+				int intoCatalogueOpenLength = intoCatalogueOpen.getLength(); //Every record
+				
+				for(int j = 0; j < intoCatalogueOpenLength; j++) {
+					Node node = intoCatalogueOpen.item(j);
+					
+					catalogue.appendChild(getNode(doc, node));
+				}
+			}
+				
+			DOMSource source = new DOMSource(doc);
+								
+			StreamResult file = new StreamResult(filePath);
+				
+			transformer.transform(source, file);
+//				
+//			System.out.println("XML is created");
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
 	public List<String[]> getListOf(String nodeListName, String nodeNames, NodeSync node) {
 		List<String[]> resultList = new ArrayList<String[]>();
 		
@@ -196,7 +241,7 @@ public class XMLManager {
 			
 			List<String> keys = node.getKeys();
 			
-			NodeList childs = nodes.getChildNodes();
+			NodeList childs = nodes.getElementsByTagName(nodeNames);
 			
 			for(int i = 0; i < childs.getLength(); i++) {
 				String[] tmpArray = new String[keys.size()];
@@ -248,6 +293,23 @@ public class XMLManager {
 			node.appendChild(getElement(doc, k, v));
 		});
 				
+		return node;
+	}
+	
+	private Node getNode(Document doc, Node anotherNode) {
+		Element node = doc.createElement(anotherNode.getNodeName());
+		
+		NodeList nodes = anotherNode.getChildNodes();
+		
+		for(int i = 0; i < nodes.getLength(); i++) {
+			Element tmpNode = (Element) nodes.item(i);
+			
+			System.out.println(tmpNode.getTagName());
+			System.out.println(tmpNode.getTextContent());
+			
+			node.appendChild(getElement(doc, tmpNode.getTagName(), tmpNode.getTextContent()));
+		}
+		
 		return node;
 	}
 	
