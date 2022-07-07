@@ -263,6 +263,56 @@ public class XMLManager {
 		return resultList;
 	}
 	
+	public void clear() {
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.parse(filePath);
+			doc.getDocumentElement().normalize();
+			
+			Element root = (Element) doc.getFirstChild();
+												
+			doc.removeChild(root);
+			
+			DOMSource source = new DOMSource(doc);
+			
+			StreamResult file = new StreamResult(filePath);
+			
+			transformer.transform(source, file);
+			
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	public void clear(String parentName) {
+		try {
+			builder = factory.newDocumentBuilder();
+			Document doc = builder.parse(filePath);
+			doc.getDocumentElement().normalize();
+			
+			Element root = (Element) doc.getFirstChild();
+												
+			Element node = (Element) root.getElementsByTagName(parentName).item(0);
+			
+			NodeList childs = node.getChildNodes();
+			
+			int length = childs.getLength();
+			
+			for(int i = 0; i < length; i++) {
+				node.removeChild(childs.item(0));
+			}
+			
+			DOMSource source = new DOMSource(doc);
+			
+			StreamResult file = new StreamResult(filePath);
+			
+			transformer.transform(source, file);
+			
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
 	private Node findNode(NodeList nodes, NodeSync nodeSync) {
 		Node foundNode = null;
 		
