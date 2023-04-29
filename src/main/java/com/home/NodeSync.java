@@ -1,4 +1,4 @@
-package org.com.home;
+package com.home;
 import java.util.List;
 import java.util.HashMap;
 
