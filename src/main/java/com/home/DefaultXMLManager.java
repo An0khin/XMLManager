@@ -52,7 +52,10 @@ public class DefaultXMLManager implements XMLManager {
                 return;
             }
 
-            document.appendChild(createElement(document, nameRoot));
+            Element base = createElement(document, "Base");
+            base.appendChild(createElement(document, nameRoot));
+
+            document.appendChild(base);
 
             saveChangesDocument(document);
         }
@@ -188,7 +191,7 @@ public class DefaultXMLManager implements XMLManager {
     }
 
     @Override
-    public List<String[]> getListOf(String nodeListTag, String nodeTags, Nodeable nodeable) {
+    public List<String[]> getListOf(String nodeListTag, String nodesTag, Nodeable nodeable) {
         List<String[]> resultList = new ArrayList<>();
 
         Document document = parseNormalizeDocument(xmlFile);
@@ -203,14 +206,16 @@ public class DefaultXMLManager implements XMLManager {
 
         Set<String> keys = nodeable.getValues().keySet();
 
-        NodeList children = nodes.getElementsByTagName(nodeTags);
+        NodeList children = nodes.getElementsByTagName(nodesTag);
 
         for(int i = 0; i < children.getLength(); i++) {
-            String[] tmpArray = new String[keys.size()];
+            int fieldsWithIdCount = keys.size() + (nodeable.getId().length > 0 ? 1 : 0);
+
+            String[] tmpArray = new String[fieldsWithIdCount];
 
             NodeList fields = children.item(i).getChildNodes();
 
-            for(int j = 0; j < keys.size(); j++) {
+            for(int j = 0; j < fieldsWithIdCount; j++) {
                 tmpArray[j] = fields.item(j).getTextContent();
             }
 
@@ -282,9 +287,12 @@ public class DefaultXMLManager implements XMLManager {
     private Node createNodeFromNodeable(Document document, String nodeTag, Nodeable nodeable) {
         Element node = createElement(document, nodeTag);
 
-        nodeable.getValues().forEach((field, value) -> {
-            node.appendChild(createElementWithValue(document, field, value));
-        });
+        String[] idKeyValue = nodeable.getId();
+        String idKey = idKeyValue[0];
+        String idValue = idKeyValue[1];
+
+        node.appendChild(createElementWithValue(document, idKey, idValue));
+        nodeable.getValues().forEach((field, value) -> node.appendChild(createElementWithValue(document, field, value)));
 
         return node;
     }
