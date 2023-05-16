@@ -13,5 +13,5 @@ public interface XMLManager {
 
     void saveXml(File toPath);
     void loadXml(File fromPath);
-    List<String[]> getListOf(String nodeListTag, String nodeTags, Nodeable nodeable);
+    List<String[]> getListOf(String nodeListTag, String nodesTag, Nodeable nodeable);
 }
