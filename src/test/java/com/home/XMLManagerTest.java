@@ -9,6 +9,7 @@ import java.util.*;
 public class XMLManagerTest {
     XMLManager xmlManager;
     public static final String PATH = "src/test/resources/test_xml.xml";
+    public static final String PATH_TEST = "src/test/resources/test2_xml.xml";
     public static List<Nodeable> nodesables;
 
     @BeforeAll
@@ -131,5 +132,21 @@ public class XMLManagerTest {
         List<String[]> listPersons = xmlManager.getListOf("Persons", "Person", nodesables.get(0));
 
         Assertions.assertTrue(listPersons.isEmpty());
+    }
+
+    @Test
+    public void load() {
+        xmlManager.createXml("Base");
+
+        xmlManager.addElement("Persons", "Base");
+        xmlManager.addNode(nodesables.get(0), "Person", "Persons");
+        xmlManager.saveXml(new File(PATH));
+        xmlManager.loadXml(new File(PATH_TEST));
+
+        List<String[]> listPersons = xmlManager.getListOf("Persons", "Person", nodesables.get(0));
+
+        Assertions.assertEquals(2, listPersons.size());
+        Assertions.assertArrayEquals(new String[] {"1", "Boris", "Frankenvilly"}, listPersons.get(0));
+        Assertions.assertArrayEquals(new String[] {"1", "Boris", "Frankenvilly"}, listPersons.get(1));
     }
 }

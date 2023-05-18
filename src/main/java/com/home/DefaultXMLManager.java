@@ -140,6 +140,7 @@ public class DefaultXMLManager implements XMLManager {
 
     private Document parseNormalizeDocument(File file) {
         try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(file);
             document.normalizeDocument();
@@ -174,7 +175,7 @@ public class DefaultXMLManager implements XMLManager {
 
         for(int i = 0; i < rootNodes.getLength(); i++) {
             Element openedCatalogue = (Element) rootOpenedNodes.item(i);
-            Element catalogue = (Element) rootOpenedNodes.item(i);
+            Element catalogue = (Element) rootNodes.item(i);
 
             NodeList intoOpenedCatalogue = openedCatalogue.getChildNodes();
             int intoOpenedCatalogueLength = intoOpenedCatalogue.getLength();
