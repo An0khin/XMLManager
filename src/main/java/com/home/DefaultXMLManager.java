@@ -52,8 +52,7 @@ public class DefaultXMLManager implements XMLManager {
                 return;
             }
 
-            Element base = createElement(document, "Base");
-            base.appendChild(createElement(document, nameRoot));
+            Element base = createElement(document,  nameRoot);
 
             document.appendChild(base);
 
@@ -205,12 +204,11 @@ public class DefaultXMLManager implements XMLManager {
         Element nodes = findElementByTag(root, nodeListTag);
 
         Set<String> keys = nodeable.getValues().keySet();
+        int fieldsWithIdCount = keys.size() + (nodeable.getId().length > 0 ? 1 : 0);
 
         NodeList children = nodes.getElementsByTagName(nodesTag);
 
         for(int i = 0; i < children.getLength(); i++) {
-            int fieldsWithIdCount = keys.size() + (nodeable.getId().length > 0 ? 1 : 0);
-
             String[] tmpArray = new String[fieldsWithIdCount];
 
             NodeList fields = children.item(i).getChildNodes();
@@ -261,6 +259,10 @@ public class DefaultXMLManager implements XMLManager {
     }
 
     private Element findElementByTag(Element parent, String tag) {
+        if(parent.getTagName().equals(tag)) {
+            return parent;
+        }
+
         NodeList nodes = parent.getElementsByTagName(tag);
 
         return (Element) nodes.item(nodes.getLength() - 1);

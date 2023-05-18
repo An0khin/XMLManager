@@ -18,7 +18,7 @@ public class XMLManagerTest {
         nodesables.add(new Nodeable() {
             @Override
             public Map<String, String> getValues() {
-                Map<String, String> values = new HashMap<>();
+                Map<String, String> values = new LinkedHashMap<>();
                 values.put("name", "Boris");
                 values.put("surname", "Frankenvilly");
                 return values;
@@ -33,7 +33,7 @@ public class XMLManagerTest {
         nodesables.add(new Nodeable() {
             @Override
             public Map<String, String> getValues() {
-                Map<String, String> values = new HashMap<>();
+                Map<String, String> values = new LinkedHashMap<>();
                 values.put("name", "Jimmy");
                 values.put("surname", "Blanky");
                 return values;
@@ -85,7 +85,7 @@ public class XMLManagerTest {
 
         List<String[]> listPersons = xmlManager.getListOf("Persons", "Person", nodesables.get(0));
 
-        Assertions.assertArrayEquals(new String[] {"1", "Frankenvilly", "Boris"}, listPersons.get(0));
+        Assertions.assertArrayEquals(new String[] {"1", "Boris", "Frankenvilly"}, listPersons.get(0));
     }
 
     @Test
@@ -101,7 +101,7 @@ public class XMLManagerTest {
         List<String[]> listPersons = xmlManager.getListOf("Persons", "Person", nodesables.get(0));
 
         Assertions.assertEquals(1, listPersons.size());
-        Assertions.assertArrayEquals(new String[] {"2", "Blanky", "Jimmy"}, listPersons.get(0));
+        Assertions.assertArrayEquals(new String[] {"2", "Jimmy", "Blanky"}, listPersons.get(0));
     }
 
     @Test
@@ -115,7 +115,7 @@ public class XMLManagerTest {
         xmlManager.editNode(nodesables.get(0), nodesables.get(1), "Person", "Persons");
         List<String[]> listPersons = xmlManager.getListOf("Persons", "Person", nodesables.get(0));
 
-        Assertions.assertArrayEquals(new String[] {"2", "Blanky", "Jimmy"}, listPersons.get(0));
+        Assertions.assertArrayEquals(new String[] {"2", "Jimmy", "Blanky"}, listPersons.get(0));
     }
 
     @Test
