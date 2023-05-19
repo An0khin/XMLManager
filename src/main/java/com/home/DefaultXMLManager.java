@@ -205,7 +205,7 @@ public class DefaultXMLManager implements XMLManager {
         Element nodes = findElementByTag(root, nodeListTag);
 
         Set<String> keys = nodeable.getValues().keySet();
-        int fieldsWithIdCount = keys.size() + (nodeable.getId().length > 0 ? 1 : 0);
+        int fieldsWithIdCount = keys.size() + (nodeable.getIdFieldValue().length > 0 ? 1 : 0);
 
         NodeList children = nodes.getElementsByTagName(nodesTag);
 
@@ -272,8 +272,8 @@ public class DefaultXMLManager implements XMLManager {
     private Node findNodeByNodeable(NodeList nodes, Nodeable nodeable) {
         Node foundNode = null;
 
-        String idKey = nodeable.getId()[0];
-        String idValue = nodeable.getId()[1];
+        String idKey = nodeable.getIdFieldValue()[0];
+        String idValue = nodeable.getIdFieldValue()[1];
 
         for(int i = 0; i < nodes.getLength(); i++) {
             Element node = (Element) nodes.item(i);
@@ -290,7 +290,7 @@ public class DefaultXMLManager implements XMLManager {
     private Node createNodeFromNodeable(Document document, String nodeTag, Nodeable nodeable) {
         Element node = createElement(document, nodeTag);
 
-        String[] idKeyValue = nodeable.getId();
+        String[] idKeyValue = nodeable.getIdFieldValue();
         String idKey = idKeyValue[0];
         String idValue = idKeyValue[1];
 

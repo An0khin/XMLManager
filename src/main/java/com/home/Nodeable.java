@@ -11,12 +11,12 @@ public interface Nodeable {
         }
 
         @Override
-        public String[] getId() {
+        public String[] getIdFieldValue() {
             return new String[0];
         }
     };
 
     Map<String, String> getValues();
 
-    String[] getId(); //{Tag, Value}
+    String[] getIdFieldValue(); //{Tag, Value}
 }

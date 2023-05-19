@@ -26,7 +26,7 @@ public class XMLManagerTest {
             }
 
             @Override
-            public String[] getId() {
+            public String[] getIdFieldValue() {
                 return new String[] {"id", "1"};
             }
         });
@@ -41,7 +41,7 @@ public class XMLManagerTest {
             }
 
             @Override
-            public String[] getId() {
+            public String[] getIdFieldValue() {
                 return new String[] {"id", "2"};
             }
         });
